@@ -52,6 +52,20 @@
       "metadata": {
         "description": "Name for the managed identity used by deployment script"
       }
+    },
+    "containerInstanceName": {
+      "type": "string",
+      "defaultValue": "[concat('aci-', uniqueString(resourceGroup().id))]",
+      "metadata": {
+        "description": "Name for the Azure Container Instance"
+      }
+    },
+    "containerImage": {
+      "type": "string",
+      "defaultValue": "mcr.microsoft.com/azuredocs/aci-helloworld:latest",
+      "metadata": {
+        "description": "Container image to deploy"
+      }
     }
   },
   "resources": [
@@ -124,7 +138,7 @@
     {
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2023-08-01",
-      "name": "deployStaticFiles2",
+      "name": "deployStaticFiles3",
       "location": "[parameters('location')]",
       "kind": "AzureCLI",
       "dependsOn": [
@@ -166,6 +180,45 @@
         ],
         "scriptContent": "#!/bin/bash\necho hello"
       }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('containerInstanceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "containers": [
+          {
+            "name": "[parameters('containerInstanceName')]",
+            "properties": {
+              "image": "[parameters('containerImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 1,
+                  "memoryInGb": 1.5
+                }
+              },
+              "ports": [
+                {
+                  "port": 80,
+                  "protocol": "TCP"
+                }
+              ]
+            }
+          }
+        ],
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "ipAddress": {
+          "type": "Public",
+          "ports": [
+            {
+              "port": 80,
+              "protocol": "TCP"
+            }
+          ]
+        }
+      }
     }
   ],
   "outputs": {
@@ -183,7 +236,7 @@
     },
     "deploymentScriptOutput": {
       "type": "object",
-      "value": "[reference('deployStaticFiles2').outputs]"
+      "value": "[reference('deployStaticFiles3').outputs]"
     }
   }
 }
