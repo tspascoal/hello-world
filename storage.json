@@ -183,7 +183,7 @@
     },
     "deploymentScriptOutput": {
       "type": "object",
-      "value": "[reference('deployStaticFiles').outputs]"
+      "value": "[reference('deployStaticFiles2').outputs]"
     }
   }
 }
