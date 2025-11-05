@@ -124,7 +124,7 @@
     {
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2023-08-01",
-      "name": "deployStaticFiles",
+      "name": "deployStaticFiles2",
       "location": "[parameters('location')]",
       "kind": "AzureCLI",
       "dependsOn": [
