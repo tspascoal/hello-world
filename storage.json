@@ -164,7 +164,7 @@
             "value": "[parameters('errorDocument404Path')]"
           }
         ],
-        "scriptContent": "#!/bin/bash\nset -e\necho 'Cloning repository...'\ngit clone --depth 1 --branch $GITHUB_BRANCH $GITHUB_REPO /tmp/repo\necho 'Removing .git folder...'\nrm -rf /tmp/repo/.git\necho 'Waiting for role assignment to propagate...'\nsleep 90\necho 'Enabling static website hosting in $STORAGE_ACCOUNT...'\nfor i in {1..5}; do\n  if az storage blob service-properties update --account-name $STORAGE_ACCOUNT --static-website --404-document $ERROR_DOCUMENT --index-document $INDEX_DOCUMENT --auth-mode login 2>/dev/null; then\n    echo 'Static website hosting enabled successfully'\n    break\n  else\n    echo \"Attempt $i failed, waiting 30 more seconds...\"\n    sleep 30\n  fi\ndone\necho 'Uploading files to storage...'\naz storage blob upload-batch --account-name $STORAGE_ACCOUNT --source /tmp/repo --destination '$web' --auth-mode login --overwrite\necho 'Deployment complete!'\nWEBSITE_URL=$(az storage account show --name $STORAGE_ACCOUNT --query 'primaryEndpoints.web' -o tsv)\necho \"Website URL: $WEBSITE_URL\"\necho \"{\\\"websiteUrl\\\": \\\"$WEBSITE_URL\\\"}\" > $AZ_SCRIPTS_OUTPUT_PATH"
+        "scriptContent": "#!/bin/bash\necho hello"
       }
     }
   ],
